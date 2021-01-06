@@ -1,0 +1,161 @@
+﻿@model Libify.Models.BookModel
+
+@inject Libify.Repository.ILanguageRepository _langRepo
+
+@{
+    ViewData["Title"] = "Add new book";
+}
+
+@section styles{
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Breeze Admin</title>
+    <link rel="stylesheet" href="~/assets/vendors/mdi/css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/flag-icon-css/css/flag-icon.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/css/vendor.bundle.base.css" />
+    <link rel="stylesheet" href="~/assets/vendors/select2/select2.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css" />
+    <link rel="stylesheet" href="~/assets/css/style.css" />
+    @*<link rel="shortcut icon" href="~/assets/images/favicon.png" />*@
+}
+
+<div class="container-scroller">
+    <partial name="_SideBar" />
+    <div class="container-fluid page-body-wrapper">
+        <partial name="_NavBar" />
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <h3 class="page-title">Book elements</h3>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a asp-action="AddBook">Add Book</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"> Book elements </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="row">
+
+                    <div class="col-12 grid-margin stretch-card">
+                        <div class="card">
+                            @if (ViewBag.isSuccess == true)
+                            {
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <strong>Book added succesfully!</strong> <a asp-area="" asp-controller="Book" asp-action="GetBook" asp-route-id="@ViewBag.bookId">Click here to see details.</a>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            }
+                            <div class="card-body">
+                                <h4 class="card-title">Add a book</h4>
+                                <p class="card-description">Books can be added in this page.</p>
+                                <form class="forms-sample" enctype="multipart/form-data" asp-area="Admin" asp-controller="Book" asp-action="AddBook">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <div class="form-group">
+                                        <div class="form-group">
+
+                                            <label asp-for="Name"></label>
+                                            <input class="form-control" asp-for="Name">
+                                            <span asp-validation-for="Name" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label asp-for="Author"></label>
+                                            <input class="form-control" asp-for="Author">
+                                            <span asp-validation-for="Author" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label asp-for="LanguageId"></label>
+                                            <select class="form-control" asp-for="LanguageId" asp-items="(await _langRepo.GetLanguages()).Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString()})">
+                                            </select>
+                                            <span asp-validation-for="LanguageId" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+
+                                            <label asp-for="Category"></label>
+                                            <input class="form-control" asp-for="Category">
+                                            <span asp-validation-for="Category" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+
+                                            <label asp-for="Quantity"></label>
+                                            <input class="form-control" asp-for="Quantity">
+                                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label asp-for="Pages"></label>
+                                            <input class="form-control" asp-for="Pages">
+                                            <span asp-validation-for="Pages" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label asp-for="CoverImage"></label>
+                                            <input class="form-control" asp-for="CoverImage">
+                                            <span asp-validation-for="CoverImage" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label asp-for="GalleryFiles"></label>
+                                            <input class="form-control" asp-for="GalleryFiles">
+                                            <span asp-validation-for="GalleryFiles" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="form-group">
+
+                                            <label asp-for="PDFFile"></label>
+                                            <input class="form-control" asp-for="PDFFile">
+                                            <span asp-validation-for="PDFFile" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+
+                                            <label asp-for="Description"></label>
+                                            <textarea class="form-control" asp-for="Description"></textarea>
+                                            <span asp-validation-for="Description" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <input type="submit" class="btn btn-primary mr-2" value="Add Book" />
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+            <partial name="_Footer" />
+            @*<footer class="footer">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap dashboard template</a> from Bootstrapdash.com</span>
+            </div>
+        </footer>*@
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+
+@section scripts{
+    <!-- container-scroller -->
+    <script src="~/assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="~/assets/vendors/select2/select2.min.js"></script>
+    <script src="~/assets/vendors/typeahead.js/typeahead.bundle.min.js"></script>
+    <script src="~/assets/js/off-canvas.js"></script>
+    <script src="~/assets/js/hoverable-collapse.js"></script>
+    <script src="~/assets/js/misc.js"></script>
+    <script src="~/assets/js/file-upload.js"></script>
+    <script src="~/assets/js/typeahead.js"></script>
+    <script src="~/assets/js/select2.js"></script>
+}
+

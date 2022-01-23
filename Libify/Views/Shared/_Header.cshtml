@@ -1,0 +1,33 @@
+﻿@inject Libify.Repository.IBookRepository _bookRepo
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" asp-controller="Home" asp-action="Index">@_bookRepo.GetAppName()</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+            @*<li class="nav-item active">
+                <a class="nav-link" asp-controller="Home" asp-action="ViewBooks">View Books</a>
+            </li>*@
+            <li class="nav-item active">
+                <a class="nav-link" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" asp-controller="Home" asp-action="PrivacyPolicy">Privacy Policy</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" asp-controller="Book" asp-action="AllBooks">View Books</a>
+            </li>
+            @*<li class="nav-item active">
+                <a class="nav-link" asp-controller="Book" asp-action="AddBook">Add Book</a>
+            </li>*@
+        </ul>
+        <ul class="navbar-nav">
+            <partial name="_LoginInfo" />
+        </ul>
+    </div>
+</nav>

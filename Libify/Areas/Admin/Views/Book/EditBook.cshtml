@@ -1,0 +1,307 @@
+﻿@model BookModel
+@inject Libify.Repository.IBookRepository _bookRepo
+@inject Libify.Repository.ILanguageRepository _langRepo
+
+@{
+    ViewData["Title"] = "Edit / Delete book";
+}
+
+@section styles{
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Breeze Admin</title>
+    <link rel="stylesheet" href="~/assets/vendors/mdi/css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/flag-icon-css/css/flag-icon.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/css/vendor.bundle.base.css" />
+    <link rel="stylesheet" href="~/assets/vendors/select2/select2.min.css" />
+    <link rel="stylesheet" href="~/assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css" />
+    <link rel="stylesheet" href="~/assets/css/style.css" />
+    @*<link rel="shortcut icon" href="~/assets/images/favicon.png" />*@
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <!-- Google Fonts Roboto -->
+    @*<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">*@
+    <!-- Bootstrap core CSS -->
+    <!--<link rel="stylesheet" href="css/bootstrap.min.css">-->
+    <!-- Material Design Bootstrap -->
+    <!--<link rel="stylesheet" href="css/mdb.min.css">-->
+    <!-- MDBootstrap Datatables  -->
+    <link href="~/mdb/css/addons/datatables.min.css" rel="stylesheet">
+    @*<style>
+            table.dataTable thead .sorting:after,
+            table.dataTable thead .sorting:before,
+            table.dataTable thead .sorting_asc:after,
+            table.dataTable thead .sorting_asc:before,
+            table.dataTable thead .sorting_asc_disabled:after,
+            table.dataTable thead .sorting_asc_disabled:before,
+            table.dataTable thead .sorting_desc:after,
+            table.dataTable thead .sorting_desc:before,
+            table.dataTable thead .sorting_desc_disabled:after,
+            table.dataTable thead .sorting_desc_disabled:before {
+                bottom: .5em;
+            }
+        </style>*@
+}
+
+<div class="container-scroller">
+    <partial name="_SideBar" />
+    <div class="container-fluid page-body-wrapper">
+        <partial name="_NavBar" />
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <h3 class="page-title">Book elements</h3>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a asp-action="EditBook">Edit - Delete Book</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"> Book elements </li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="row">
+
+                    <div class="col-12 grid-margin stretch-card">
+                        <div class="card">
+
+                            @if (ViewBag.isEditedSuccess == true)
+                            {
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <strong>Book edited succesfully!</strong> <a asp-area="" asp-controller="Book" asp-action="GetBook" asp-route-id="@ViewBag.editedBookId">Click here to see details.</a>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            }
+                            @if (ViewBag.isDeletedSuccess == true)
+                            {
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <strong>Book deleted succesfully!</strong>
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            }
+                            <div class="card-body">
+                                <h4 class="card-title">Edit a book</h4>
+                                <p class="card-description">Books can be edited in this page.</p>
+                                <div class="form-group">
+
+
+                                    <table id="dtBasicExample" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th class="th-sm">
+                                                    ID
+                                                </th>
+                                                <th class="th-sm">
+                                                    Name
+                                                </th>
+                                                <th class="th-sm">
+                                                    Operation
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in (await _bookRepo.GetAllBooks()).ToList())
+                                            {
+                                                <tr>
+                                                    <td>@item.Id</td>
+                                                    <td>@item.Name</td>
+                                                    <td><a asp-action="EditBook" asp-route-id="@item.Id">Edit</a> | <a asp-action="DeleteBook" asp-route-id="@item.Id">Delete</a></td>
+                                                </tr>
+                                            }
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                                @if (Model != null)
+                                {
+                                    <form class="forms-sample" enctype="multipart/form-data" asp-area="Admin" asp-controller="Book" asp-action="EditBook">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <div class="form-group">
+
+
+                                            <div class="form-group">
+
+                                                <label asp-for="Name"></label>
+                                                <input class="form-control" asp-for="Name">
+                                                <span asp-validation-for="Name" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group">
+
+                                                <label asp-for="Author"></label>
+                                                <input class="form-control" asp-for="Author">
+                                                <span asp-validation-for="Author" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group">
+
+                                                <label asp-for="LanguageId"></label>
+                                                <select class="form-control" asp-for="LanguageId" asp-items="(await _langRepo.GetLanguages()).Select(x => new SelectListItem() { Text = x.Name, Value = x.Id.ToString()})">
+                                                </select>
+                                                <span asp-validation-for="LanguageId" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+
+                                                <label asp-for="Category"></label>
+                                                <input class="form-control" asp-for="Category">
+                                                <span asp-validation-for="Category" class="text-danger"></span>
+                                            </div>
+                                            <div class="form-group">
+
+                                                <label asp-for="Quantity"></label>
+                                                <input class="form-control" asp-for="Quantity">
+                                                <span asp-validation-for="Quantity" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group">
+
+                                                <label asp-for="Pages"></label>
+                                                <input class="form-control" asp-for="Pages">
+                                                <span asp-validation-for="Pages" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group border border-secondary p-3">
+
+                                                <label asp-for="CoverImage">Current Image</label> <br />
+                                                <img class="img-fluid w-50 border" src="@Model?.CoverImagePath" /> <br /><br />
+                                                <label asp-for="CoverImage"></label> <br />
+                                                <input class="form-control" asp-for="CoverImage">
+                                                <span asp-validation-for="CoverImage" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group border border-secondary p-3">
+
+                                                @*<label asp-for="GalleryFiles"></label> <br />*@
+                                                @*<div id="carouselExampleIndicators" class="carousel slide w-50" data-ride="carousel">
+                                                <ol class="carousel-indicators">
+                                                    @for (int i = 0; i < Model.Gallery.Count(); i++)
+                                                    {
+                                                        <li data-target="#carouselExampleIndicators" data-slide-to="@i" class="@(i == 0 ? "active" : "")"></li>
+                                                    }
+                                                </ol>
+                                                <div class="carousel-inner">
+                                                    @for (int i = 0; i < Model.Gallery.Count(); i++)
+                                                    {
+                                                        <div class="@(i == 0 ? "carousel-item active" : "carousel-item")">
+                                                            <img class="d-block w-100 img-fluid" src="@Model.Gallery[i].URL" alt="@Model.Gallery[i].Name">
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <span class="sr-only">Previous</span>
+                                                </a>
+                                                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <span class="sr-only">Next</span>
+                                                </a>
+                                            </div> <br /><br />*@
+                                                <label asp-for="GalleryFiles"></label> <br />
+                                                <input class="form-control" asp-for="GalleryFiles">
+                                                <span asp-validation-for="GalleryFiles" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="form-group border border-secondary p-3">
+                                                <a class="btn btn-primary text-white" data-toggle="modal" data-target="#exampleModal">
+                                                    Open Current PDF
+                                                </a> <br /><br />
+                                                <div class="form-group">
+
+                                                    <label asp-for="PDFFile"></label>
+                                                    <input class="form-control" asp-for="PDFFile">
+                                                    <span asp-validation-for="PDFFile" class="text-danger"></span>
+                                                </div>
+                                            </div>
+
+                                            <!-- Modal -->
+                                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg h-auto" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            @*<embed src="@Model.PDFFilePath" class="w-100" />*@
+                                                            <iframe src="@Model?.PDFFilePath" class="w-100" style="height: 500px;"></iframe>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>                    @*<button type="button" class="btn btn-primary">Save changes</button>*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+
+                                            <div class="form-group">
+
+                                                <label asp-for="Description"></label>
+                                                <textarea class="form-control" asp-for="Description" rows="10"></textarea>
+                                                <span asp-validation-for="Description" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <input type="submit" class="btn btn-primary mr-2" value="Edit Book" asp-route-id="@Model.Id" />
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+            <partial name="_Footer" />
+            @*<footer class="footer">
+            <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © bootstrapdash.com 2020</span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> Free <a href="https://www.bootstrapdash.com/" target="_blank">Bootstrap dashboard template</a> from Bootstrapdash.com</span>
+            </div>
+        </footer>*@
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+
+@section scripts{
+    <!-- container-scroller -->
+    <script src="~/assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="~/assets/vendors/select2/select2.min.js"></script>
+    <script src="~/assets/vendors/typeahead.js/typeahead.bundle.min.js"></script>
+    <script src="~/assets/js/off-canvas.js"></script>
+    <script src="~/assets/js/hoverable-collapse.js"></script>
+    <script src="~/assets/js/misc.js"></script>
+    <script src="~/assets/js/file-upload.js"></script>
+    <script src="~/assets/js/typeahead.js"></script>
+    <script src="~/assets/js/select2.js"></script>
+    <!-- jQuery -->
+    <!--<script type="text/javascript" src="~/mdb/js/jquery.min.js"></script>-->
+    <!-- Bootstrap tooltips -->
+    <!--<script type="text/javascript" src="~/mdb/js/popper.min.js"></script>-->
+    <!-- Bootstrap core JavaScript -->
+    <!--<script type="text/javascript" src="~/mdb/js/bootstrap.min.js"></script>-->
+    <!-- MDB core JavaScript -->
+    <!--<script type="text/javascript" src="~/mdb/js/mdb.min.js"></script>-->
+    <!-- MDBootstrap Datatables  -->
+    <script type="text/javascript" src="~/mdb/js/addons/datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#dtBasicExample').DataTable();
+            $('.dataTables_length').addClass('bs-select');
+        });
+    </script>
+}
+
+
+

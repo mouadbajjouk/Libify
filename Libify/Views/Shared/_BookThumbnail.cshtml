@@ -1,0 +1,29 @@
+﻿@model BookModel
+
+    
+<div class="card shadow-sm mx-auto" style="width: 18rem;">
+    <img class="card-img-top" src="@(string.IsNullOrEmpty(Model.CoverImagePath) ? "~/images/1200x630wa.png" : Model.CoverImagePath)" alt="Card image cap">
+    <div class="card-body">
+        <h5 class="card-title">@(string.IsNullOrEmpty(Model.Name) ? "No Name Available" : Model.Name)</h5>
+        @if (string.IsNullOrEmpty(Model.Description))
+        {
+            <p class="card-text text-justify">No Description Available</p>
+        }
+        else if(Model.Description.Length > 100)
+        {
+            <p class="card-text text-justify">@(Model.Description.Substring(0, Math.Min(Model.Description.Length, 200)))...</p>
+        }
+        else
+        {
+            <p class="card-text text-justify">@Model.Description</p>
+        }
+
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="btn-group">
+                <a asp-controller="Book" asp-action="GetBook" asp-route-id="@Model.Id" class="btn btn-primary">View details</a>
+            </div>
+            <small class="text-muted">@(string.IsNullOrEmpty(Model.Author) ? "No Author Available" : Model.Author)</small>
+        </div>
+    </div>
+</div>
+    
